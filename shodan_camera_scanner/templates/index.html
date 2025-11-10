@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shodan Cam Scanner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Shodan Cam Scanner</h1>
+            <p>Scan for exposed IP cameras using machine learning analysis</p>
+        </header>
+
+        <!-- Camera Search Section -->
+        <div class="search-section">
+            <h2 class="section-title">Location-Based Camera Search</h2>
+            <p class="section-description">Search for IP cameras by location, coordinates, or network range</p>
+
+            <div class="search-tabs">
+                <button class="tab-btn active" data-tab="location">Location Search</button>
+                <button class="tab-btn" data-tab="coordinates">Coordinates</button>
+                <button class="tab-btn" data-tab="network">Network Range</button>
+            </div>
+
+            <!-- Location Search Tab -->
+            <div id="location-tab" class="tab-content active">
+                <div class="location-search-grid">
+                    <div class="input-group">
+                        <label for="city-input">City</label>
+                        <input type="text" id="city-input" placeholder="e.g., San Diego, London, Tokyo">
+                    </div>
+                    <div class="input-group">
+                        <label for="country-input">Country (Optional)</label>
+                        <input type="text" id="country-input" placeholder="e.g., US, UK, JP">
+                        <small>2-letter country code</small>
+                    </div>
+                    <div class="input-group">
+                        <label for="state-input">State (Optional)</label>
+                        <input type="text" id="state-input" placeholder="e.g., California, Texas">
+                        <small>For U.S. locations</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coordinates Tab -->
+            <div id="coordinates-tab" class="tab-content">
+                <div class="coordinates-grid">
+                    <div class="input-group">
+                        <label for="latitude-input">Latitude</label>
+                        <input type="text" id="latitude-input" placeholder="e.g., 32.7157">
+                    </div>
+                    <div class="input-group">
+                        <label for="longitude-input">Longitude</label>
+                        <input type="text" id="longitude-input" placeholder="e.g., -117.1611">
+                    </div>
+                    <div class="input-group">
+                        <label for="radius-input">Search Radius (Optional)</label>
+                        <input type="text" id="radius-input" placeholder="e.g., 50 (km)">
+                        <small>Distance from coordinates</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Range Tab -->
+            <div id="network-tab" class="tab-content">
+                <div class="network-grid">
+                    <div class="input-group full-width">
+                        <label for="network-input">Network Range (CIDR)</label>
+                        <input type="text" id="network-input" placeholder="e.g., 192.168.1.0/24 or 8.8.8.0/24">
+                        <small>Scan a specific IP range for cameras</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Camera Type Options -->
+            <div class="camera-options">
+                <h3>Camera Type</h3>
+                <div class="camera-type-grid">
+                    <label class="camera-type-option">
+                        <input type="radio" name="camera-type" value="all" checked>
+                        <span>All Cameras</span>
+                    </label>
+                    <label class="camera-type-option">
+                        <input type="radio" name="camera-type" value="webcam">
+                        <span>Webcams</span>
+                    </label>
+                    <label class="camera-type-option">
+                        <input type="radio" name="camera-type" value="surveillance">
+                        <span>Surveillance</span>
+                    </label>
+                    <label class="camera-type-option">
+                        <input type="radio" name="camera-type" value="rtsp">
+                        <span>RTSP Streams</span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="search-btn" class="search-btn">Scan for Cameras</button>
+            <button id="demo-btn" class="demo-btn">Try Demo Mode (Uses Test Data)</button>
+            <p class="demo-note">Demo Mode uses sample camera data - no API key needed!</p>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Searching...</p>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div id="ml-results-section" class="ml-results-section" style="display: none;">
+            <h2>🤖 AI Classification Results</h2>
+            <div class="ml-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="ml-accuracy">0%</div>
+                    <div class="stat-label">Model Accuracy</div>
+                </div>
+                <div class="stat-card exposed">
+                    <div class="stat-value" id="exposed-count">0</div>
+                    <div class="stat-label">Exposed Devices</div>
+                </div>
+                <div class="stat-card benign">
+                    <div class="stat-value" id="benign-count">0</div>
+                    <div class="stat-label">Benign Devices</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-analyzed">0</div>
+                    <div class="stat-label">Total Analyzed</div>
+                </div>
+            </div>
+            <div class="visualization-container">
+                <img id="ml-visualization" src="" alt="ML Visualization">
+            </div>
+        </div>
+
+        <div id="results-section" class="results-section" style="display: none;">
+            <div class="results-header">
+                <h2>Search Results</h2>
+                <span id="total-results" class="badge">0 devices found</span>
+            </div>
+            <div id="results" class="results-grid"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
